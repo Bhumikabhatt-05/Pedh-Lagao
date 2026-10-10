@@ -50,7 +50,7 @@ const Sidebar = () => {
         <hr />
 
         {/* Orders */}
-        <NavLink
+        {/* <NavLink
 
           to='/orders'
 
@@ -66,9 +66,9 @@ const Sidebar = () => {
 
           🛒 Orders
 
-        </NavLink>
+        </NavLink> */}
 
-            <hr />
+            {/* <hr /> */}
       </div>
 
     </div>

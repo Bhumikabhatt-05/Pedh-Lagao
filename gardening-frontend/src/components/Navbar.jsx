@@ -7,6 +7,7 @@ import cartIcon from '../assets/shopping-cart.png'
 import user from '../assets/user.png'
 const Navbar = () => {
   const { cartItems } = useContext(ShopContext);
+   const { token, logout } = useContext(ShopContext);
   return (
     <div className='h-20 flex items-center justify-between px-4 py-2 border-b border-b-gray-400'>
       <Link to='/'>
@@ -30,17 +31,25 @@ const Navbar = () => {
          
           <div className=' group relative p-2 rounded-full hover:bg-green-200'>
             <img className='h-5 hover:scale-90'  src={user} alt="" />
-            <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-5'>
+            <div className='group-hover:block hidden absolute dropdown-menu right-0 pt-8'>
               <div className='flex flex-col gap-2 w-36 py-3 px-5 text-gray-500 bg-slate-100'>
-                <Link to='/login'><p className='cursor-pointer hover:text-black'>
-                  My Profile
-                </p></Link>
                 <Link to='/order'><p className='cursor-pointer hover:text-black'>
                   Orders
                 </p></Link>
-                <p className='cursor-pointer hover:text-black'>
-                  LogOut
-                </p>
+               
+
+{token ? (
+  <button
+    onClick={logout}
+    className='bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-full transition'
+  >
+    Logout
+  </button>
+) : (
+  <Link to='/login' className='bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-full transition'>
+    Login
+  </Link>
+)}
 
 
               </div>

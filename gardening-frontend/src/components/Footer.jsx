@@ -7,7 +7,7 @@ const Footer = () => {
 
       <div className='max-w-7xl mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-10'>
 
-        {/* Logo & About */}
+        
         <div>
           <h1 className='text-3xl font-black text-green-400 mb-4'>
             Pedh Lagao
@@ -20,7 +20,7 @@ const Footer = () => {
           </p>
         </div>
 
-        {/* Quick Links */}
+        
         <div>
           <h2 className='text-2xl font-semibold mb-4'>
             Quick Links
@@ -45,7 +45,7 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Contact */}
+       
         <div>
           <h2 className='text-2xl font-semibold mb-4'>
             Contact Us
@@ -59,7 +59,7 @@ const Footer = () => {
         </div>
           
         </div>
-      {/* Bottom */}
+      
       <div className='border-t border-green-800 py-4 text-center text-gray-400 text-sm'>
         © 2026 Pedh Lagao. All Rights Reserved.
       </div>

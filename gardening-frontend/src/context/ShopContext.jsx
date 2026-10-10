@@ -2,7 +2,7 @@ import { createContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import axios from 'axios'
-
+import { toast } from 'react-toastify';
 export const ShopContext = createContext();
 
 export const ShopContextProvider = (props) => {
@@ -17,6 +17,14 @@ export const ShopContextProvider = (props) => {
   const [token, setToken] = useState(localStorage.getItem('token') || '')
   const [cartItems, setCartItems] = useState([]);
   const [products, setProducts] = useState([]);
+    // Logout
+  const logout = () => {
+    localStorage.removeItem('token')
+    setToken('')
+    setCartItems([])
+    toast.success('Logged out successfully')
+    navigate('/login')
+  }
 
   // Add To Cart Function
   const addToCart = (product) => {
@@ -32,12 +40,18 @@ export const ShopContextProvider = (props) => {
     } else {
       setCartItems([...cartItems, { ...product, quantity: 1 }]);
     }
+
+    toast.success('Product added to cart', { toastId: 'added-to-cart' });
   };
 
   // Sync token to localStorage whenever it changes
   useEffect(() => {
+  if (token) {
     localStorage.setItem('token', token)
-  }, [token])
+  } else {
+    localStorage.removeItem('token')
+  }
+}, [token])
 
   const getProductData = async () => {
     try {
@@ -65,7 +79,8 @@ export const ShopContextProvider = (props) => {
     backendUrl,
     token,
     setToken,
-    navigate
+    navigate,
+    logout
   };
 
   return (

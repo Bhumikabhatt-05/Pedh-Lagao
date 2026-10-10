@@ -1,15 +1,16 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import axios from 'axios'
+import { toast } from 'react-toastify'
 import { ShopContext } from '../context/ShopContext'
-import { useEffect } from 'react'
 
 const Login = () => {
   const [currentState, setCurrentState] = useState('Login')
-  const { setToken, token ,backendUrl, navigate } = useContext(ShopContext)
+  const { setToken, token, backendUrl, navigate } = useContext(ShopContext)
 
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [showPassword, setShowPassword] = useState(false)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -19,39 +20,37 @@ const Login = () => {
     setLoading(true)
 
     try {
-      if (currentState === 'Sign Up') {
-        const response = await axios.post(backendUrl + '/api/user/register', {
-          name,
-          email,
-          password
-        })
-        if (response.data.success) {
-          setToken(response.data.token)
-          localStorage.setItem('token', response.data.token)
-        } else {
-          setError(response.data.message)
-        }
+      const isSignUp = currentState === 'Sign Up'
+
+      const response = isSignUp
+        ? await axios.post(backendUrl + '/api/user/register', { name, email, password })
+        : await axios.post(backendUrl + '/api/user/login', { email, password })
+
+      if (response.data.success) {
+        setToken(response.data.token)
+        localStorage.setItem('token', response.data.token)
+        toast.success(isSignUp ? 'Account created successfully' : 'Logged in successfully')
       } else {
-        const response = await axios.post(backendUrl + '/api/user/login', {
-          email,
-          password
-        })
-        if (response.data.success) {
-          setToken(response.data.token)
-          localStorage.setItem('token', response.data.token)
-        } else {
-          setError(response.data.message)
-        }
+        setError(response.data.message)
+        toast.error(response.data.message)
       }
     } catch (err) {
       console.log(err)
-      setError('Something went wrong. Please try again.')
+      const message =
+        err.response?.data?.message || err.message || 'Something went wrong. Please try again.'
+      setError(message)
+      toast.error(message)
     } finally {
       setLoading(false)
     }
   }
 
-
+  // After login or sign up, go straight to the cart
+  useEffect(() => {
+    if (token) {
+      navigate('/cart')
+    }
+  }, [token])
 
   return (
     <div className='min-h-screen flex items-center justify-center px-4 bg-linear-to-br from-green-50 via-white to-emerald-50 relative overflow-hidden'>
@@ -112,17 +111,38 @@ const Login = () => {
             />
           </div>
 
-          {/* Password */}
+          {/* Password with eye */}
           <div className='flex flex-col gap-1'>
             <label className='text-sm font-semibold text-gray-600'>Password</label>
-            <input
-              type='password'
-              placeholder={currentState === 'Sign Up' ? 'Min. 8 characters' : 'Your password'}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className='border border-gray-200 rounded-xl px-4 py-3 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100 transition text-gray-800'
-            />
+            <div className='relative'>
+              <input
+                type={showPassword ? 'text' : 'password'}
+                placeholder={currentState === 'Sign Up' ? 'Min. 8 characters' : 'Your password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className='w-full border border-gray-200 rounded-xl pl-4 pr-12 py-3 outline-none focus:border-green-500 focus:ring-2 focus:ring-green-100 transition text-gray-800'
+              />
+              <button
+                type='button'
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+                className='absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-green-600 transition'
+              >
+                {showPassword ? (
+                  /* eye-off */
+                  <svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5' fill='none' viewBox='0 0 24 24' stroke='currentColor' strokeWidth={2}>
+                    <path strokeLinecap='round' strokeLinejoin='round' d='M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21' />
+                  </svg>
+                ) : (
+                  /* eye */
+                  <svg xmlns='http://www.w3.org/2000/svg' className='h-5 w-5' fill='none' viewBox='0 0 24 24' stroke='currentColor' strokeWidth={2}>
+                    <path strokeLinecap='round' strokeLinejoin='round' d='M15 12a3 3 0 11-6 0 3 3 0 016 0z' />
+                    <path strokeLinecap='round' strokeLinejoin='round' d='M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z' />
+                  </svg>
+                )}
+              </button>
+            </div>
           </div>
 
           {/* Forgot Password */}

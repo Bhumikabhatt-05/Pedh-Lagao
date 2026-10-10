@@ -3,9 +3,9 @@ import {v2 as cloudinary} from "cloudinary"
 import productModel from "../models/productModel.js";
 import path from "path";
 import fs from 'fs'
-const addProduct=async (req,res)=>{
+const addProduct = async (req, res) => {
     try {
-         const {name, description, price, category, uses} = req.body
+        const { name, description, price, category, uses } = req.body
         const image = req.files?.image?.[0];
 
         if (!image) {
@@ -13,32 +13,34 @@ const addProduct=async (req,res)=>{
         }
 
         const filePath = path.resolve(image.path);
-        console.log("file path:", filePath)
-        console.log("file exists:", fs.existsSync(filePath))
 
         const result = await cloudinary.uploader.upload(filePath, {
             resource_type: 'image'
         })
 
-        console.log("upload success:", result.secure_url)
+        // Next id = highest existing id + 1
+        const lastProduct = await productModel.findOne().sort({ id: -1 })
+        const nextId = lastProduct ? lastProduct.id + 1 : 1
 
-        const imageUrl = result.secure_url
-        const productData ={
-            name,description,category,price:Number(price),uses
-            ,image:imageUrl
-
+        const productData = {
+            id: nextId,
+            name,
+            description,
+            category,
+            price: Number(price),
+            uses: (uses || '').split(',').map((u) => u.trim()).filter(Boolean),
+            image: result.secure_url,
         }
-        console.log(productData)
+
         const product = new productModel(productData)
         await product.save()
 
-        res.json({success:true,message:"Product added"})
+        res.json({ success: true, message: "Product added" })
 
     } catch (error) {
         console.log("FULL ERROR:", JSON.stringify(error, null, 2))
-        res.json({success:false,message:error.message})
+        res.json({ success: false, message: error.message })
     }
-
 }
 
 //function for list product

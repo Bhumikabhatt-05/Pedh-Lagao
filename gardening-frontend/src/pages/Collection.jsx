@@ -16,7 +16,7 @@ const Collection = () => {
 
     <div className='min-h-screen px-6 py-10'>
 
-      {/* Heading */}
+      
       <div className='flex flex-col items-center mb-10'>
 
         <h1 className='text-5xl font-bold text-green-900 mb-4'>
@@ -29,7 +29,7 @@ const Collection = () => {
 
       </div>
 
-      {/* Search Bar */}
+    
       <div className='flex justify-center mb-12'>
 
         <input
@@ -42,7 +42,7 @@ const Collection = () => {
 
       </div>
 
-      {/* Products */}
+     
       <div className='flex justify-center gap-10 flex-wrap'>
 
         {

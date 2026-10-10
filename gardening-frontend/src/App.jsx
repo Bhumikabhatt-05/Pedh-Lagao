@@ -10,11 +10,17 @@ import Login from './pages/Login';
 import Cart from './pages/Cart';
 import PlaceOrder from './pages/PlaceOrder';
 import Order from './pages/Order';
-import Footer from './components/Footer'
+import Footer from './components/Footer';
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import Success from './pages/Success';
+
+
 function App() {
   return (
    <div className='min-h-screen flex flex-col'>
       <Navbar />
+      <ToastContainer position="top-right" autoClose={2000} />
       <div className='grow'>
         <Routes>
         <Route path='/' element={<Home />} />
@@ -26,6 +32,7 @@ function App() {
         <Route path='/cart'  element={<CartPage />} />
         <Route path='/order'  element={<Order />} />
         <Route path='/placeorder'  element={<PlaceOrder />} />
+        <Route path='/success'  element={<Success />} />
       </Routes>
       </div>
       <Footer />
